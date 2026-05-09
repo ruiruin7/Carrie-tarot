@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carrie塔罗</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="主导航">
+        <a class="brand" href="#top" aria-label="Carrie塔罗首页">
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span>Carrie塔罗</span>
+        </a>
+        <div class="nav-links">
+          <a href="#draw">三牌占卜</a>
+          <a href="#cards">78张牌</a>
+          <a href="#guide">解读方式</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="tarot-hero-card card-a"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/RWS_Tarot_18_Moon.jpg?width=360" alt="" /></div>
+          <div class="tarot-hero-card card-b"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/RWS_Tarot_17_Star.jpg?width=360" alt="" /></div>
+          <div class="tarot-hero-card card-c"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/RWS_Tarot_19_Sun.jpg?width=360" alt="" /></div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">78张韦特塔罗牌 · 三牌牌阵</p>
+          <h1 id="hero-title">在牌面、象征和直觉之间，找到今天的问题线索。</h1>
+          <p class="hero-text">
+            浏览完整牌库，查看每张牌的关键词和解释；也可以随机抽取三张牌，获得过去、现在、未来的简短指引。
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#draw">立即抽三张</a>
+            <a class="button ghost" href="#cards">查看牌库</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="draw-section" id="draw" aria-labelledby="draw-title">
+        <div class="section-heading">
+          <p class="eyebrow">Three Card Spread</p>
+          <h2 id="draw-title">随机抽取三张牌</h2>
+          <p>默念一个问题，然后点击按钮。牌阵从左到右分别代表过去、现在、未来。</p>
+        </div>
+
+        <div class="draw-board" aria-live="polite">
+          <article class="draw-slot" data-position="过去">
+            <p>过去</p>
+            <div class="draw-card card-back"></div>
+            <h3>等待抽牌</h3>
+            <span>问题的根源和已发生的影响</span>
+          </article>
+          <article class="draw-slot" data-position="现在">
+            <p>现在</p>
+            <div class="draw-card card-back"></div>
+            <h3>等待抽牌</h3>
+            <span>当前状态、挑战和机会</span>
+          </article>
+          <article class="draw-slot" data-position="未来">
+            <p>未来</p>
+            <div class="draw-card card-back"></div>
+            <h3>等待抽牌</h3>
+            <span>趋势、建议和下一步可能性</span>
+          </article>
+        </div>
+
+        <div class="draw-actions">
+          <button class="button primary" id="drawButton" type="button">抽取三张牌</button>
+          <button class="button ghost" id="resetButton" type="button">重置牌阵</button>
+        </div>
+      </section>
+
+      <section class="cards-section" id="cards" aria-labelledby="cards-title">
+        <div class="section-heading compact">
+          <p class="eyebrow">Card Library</p>
+          <h2 id="cards-title">78张塔罗牌介绍</h2>
+          <p>搜索牌名、关键词或牌组，点击任意卡片查看更完整的解释。</p>
+        </div>
+
+        <div class="toolbar" aria-label="牌库筛选">
+          <label class="search-field">
+            <span>搜索</span>
+            <input id="searchInput" type="search" placeholder="例如：愚者、权杖、选择、丰盛" />
+          </label>
+          <div class="filters" role="group" aria-label="牌组筛选">
+            <button class="filter active" type="button" data-filter="all">全部</button>
+            <button class="filter" type="button" data-filter="Major Arcana">大阿卡那</button>
+            <button class="filter" type="button" data-filter="Wands">权杖</button>
+            <button class="filter" type="button" data-filter="Cups">圣杯</button>
+            <button class="filter" type="button" data-filter="Swords">宝剑</button>
+            <button class="filter" type="button" data-filter="Pentacles">星币</button>
+          </div>
+        </div>
+
+        <div class="result-count" id="resultCount"></div>
+        <div class="card-grid" id="cardGrid"></div>
+      </section>
+
+      <section class="guide-section" id="guide" aria-labelledby="guide-title">
+        <div>
+          <p class="eyebrow">Reading Notes</p>
+          <h2 id="guide-title">三张牌怎么读</h2>
+        </div>
+        <div class="guide-grid">
+          <article>
+            <h3>先看牌阵位置</h3>
+            <p>过去代表原因和背景，现在代表你正在面对的核心，未来代表趋势和建议，不是绝对预言。</p>
+          </article>
+          <article>
+            <h3>再看牌面关系</h3>
+            <p>观察三张牌的元素、数字、人物方向和情绪。如果两张牌含义冲突，通常说明问题里存在拉扯。</p>
+          </article>
+          <article>
+            <h3>最后落到行动</h3>
+            <p>把牌义转成一个可以执行的小动作，例如沟通、等待、整理资源、设定边界或重新选择。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="card-dialog" id="cardDialog">
+      <button class="dialog-close" id="dialogClose" type="button" aria-label="关闭卡片详情">×</button>
+      <div id="dialogContent"></div>
+    </dialog>
+
+    <footer class="footer">
+      <p>Carrie塔罗 · 以象征作为自我提问的工具</p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
