@@ -89,6 +89,7 @@ const filterButtons = $$(".filter");
 const ritualForm = $("#ritualForm");
 const shuffleStage = $("#shuffleStage");
 const shuffleStatus = $("#shuffleStatus");
+const resultSection = $("#result");
 const shareCard = $("#shareCard");
 const copyButton = $("#copyButton");
 const saveButton = $("#saveButton");
@@ -166,19 +167,31 @@ function composeReading({ mode, person, question, spread }) {
 
 function renderReading(reading) {
   shareCard.classList.remove("empty");
+  resultSection.classList.remove("result-ready", "cards-awake", "text-awake");
   shareCard.innerHTML = `
     <div class="result-kicker">Carrie塔罗 · ${new Date().toLocaleDateString("zh-CN")}</div>
-    <h3 class="result-title">${reading.title}</h3>
-    <p class="result-question">${reading.question}</p>
+    <div class="result-oracle">
+      <h3 class="result-title">${reading.title}</h3>
+      <p class="result-question">${reading.question}</p>
+    </div>
     <div class="revealed-grid">
       ${reading.spread.map((card) => `
         <div class="revealed-card ${card.reversedDraw ? "reversed" : ""}">
-          <img src="${card.image}" alt="${card.name}" />
+          <div class="revealed-card-shell">
+            <div class="revealed-card-face">
+              <img src="${card.image}" alt="${card.name}" />
+            </div>
+          </div>
           <small>${card.position} · ${card.reversedDraw ? "逆位" : "正位"}</small>
           <strong>${card.name}</strong>
         </div>`).join("")}
     </div>
     <div class="reading-text">${reading.paragraphs.map((p) => `<p>${p}</p>`).join("")}</div>`;
+  requestAnimationFrame(() => {
+    resultSection.classList.add("result-ready");
+    setTimeout(() => resultSection.classList.add("cards-awake"), 520);
+    setTimeout(() => resultSection.classList.add("text-awake"), 1300);
+  });
 }
 
 async function beginRitual(event) {
@@ -188,6 +201,7 @@ async function beginRitual(event) {
   const person = $("#personInput").value.trim();
   const question = $("#questionInput").value.trim();
   const seedText = `${mode}|${person}|${question}`;
+  resultSection.classList.remove("result-ready", "cards-awake", "text-awake");
   shuffleStage.classList.remove("settling", "revealing");
   shuffleStage.classList.add("shuffling");
   shuffleStatus.textContent = "正在洗牌。答案已经存在，只是还没有被看见。";
@@ -308,6 +322,31 @@ function setupStageParallax() {
   shuffleStage.addEventListener("pointerleave", resetTilt);
 }
 
+function setupResultParallax() {
+  if (!resultSection) return;
+  let raf = 0;
+  function moveLight(event) {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const rect = resultSection.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      resultSection.style.setProperty("--result-tilt-y", `${x * 7}deg`);
+      resultSection.style.setProperty("--result-tilt-x", `${y * -5}deg`);
+      resultSection.style.setProperty("--result-light-x", `${50 + x * 18}%`);
+      resultSection.style.setProperty("--result-light-y", `${42 + y * 14}%`);
+    });
+  }
+  function resetLight() {
+    resultSection.style.setProperty("--result-tilt-y", "0deg");
+    resultSection.style.setProperty("--result-tilt-x", "0deg");
+    resultSection.style.setProperty("--result-light-x", "50%");
+    resultSection.style.setProperty("--result-light-y", "42%");
+  }
+  resultSection.addEventListener("pointermove", moveLight);
+  resultSection.addEventListener("pointerleave", resetLight);
+}
+
 let audioContext;
 function toggleSound() {
   if (audioContext) {
@@ -349,3 +388,4 @@ renderCards();
 renderMemory();
 setupParticles();
 setupStageParallax();
+setupResultParallax();
