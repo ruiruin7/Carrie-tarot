@@ -188,17 +188,23 @@ async function beginRitual(event) {
   const person = $("#personInput").value.trim();
   const question = $("#questionInput").value.trim();
   const seedText = `${mode}|${person}|${question}`;
+  shuffleStage.classList.remove("settling", "revealing");
   shuffleStage.classList.add("shuffling");
-  shuffleStatus.textContent = "正在洗牌。让问题先沉下去。";
+  shuffleStatus.textContent = "正在洗牌。答案已经存在，只是还没有被看见。";
   location.hash = "#shuffle";
-  await new Promise((resolve) => setTimeout(resolve, 2300));
-  shuffleStatus.textContent = "牌面正在靠近。";
+  await new Promise((resolve) => setTimeout(resolve, 2800));
+  shuffleStage.classList.remove("shuffling");
+  shuffleStage.classList.add("settling");
+  shuffleStatus.textContent = "牌面停住了。先别急着解释。";
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  shuffleStage.classList.add("revealing");
+  shuffleStatus.textContent = "光正在靠近你的问题。";
   await new Promise((resolve) => setTimeout(resolve, 950));
   const spread = pickCards(seedText);
   const readingBase = composeReading({ mode, person, question, spread });
   state.lastReading = { ...readingBase, mode, person, question: question || "我真正想知道的答案是什么？", spread, createdAt: new Date().toISOString() };
   renderReading(state.lastReading);
-  shuffleStage.classList.remove("shuffling");
+  shuffleStage.classList.remove("shuffling", "settling");
   shuffleStatus.textContent = "结果已经出现。";
   location.hash = "#result";
 }
@@ -277,6 +283,31 @@ function setupParticles() {
   window.addEventListener("resize", resize);
 }
 
+function setupStageParallax() {
+  if (!shuffleStage) return;
+  let raf = 0;
+  function setTilt(event) {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const rect = shuffleStage.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      shuffleStage.style.setProperty("--tilt-y", `${x * 9}deg`);
+      shuffleStage.style.setProperty("--tilt-x", `${y * -7}deg`);
+      shuffleStage.style.setProperty("--nebula-x", `${x * -26}px`);
+      shuffleStage.style.setProperty("--nebula-y", `${y * 18}px`);
+    });
+  }
+  function resetTilt() {
+    shuffleStage.style.setProperty("--tilt-y", "0deg");
+    shuffleStage.style.setProperty("--tilt-x", "0deg");
+    shuffleStage.style.setProperty("--nebula-x", "0px");
+    shuffleStage.style.setProperty("--nebula-y", "0px");
+  }
+  shuffleStage.addEventListener("pointermove", setTilt);
+  shuffleStage.addEventListener("pointerleave", resetTilt);
+}
+
 let audioContext;
 function toggleSound() {
   if (audioContext) {
@@ -317,3 +348,4 @@ soundToggle.addEventListener("click", toggleSound);
 renderCards();
 renderMemory();
 setupParticles();
+setupStageParallax();
