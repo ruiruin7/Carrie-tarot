@@ -159,6 +159,141 @@
       <p>Carrie塔罗 · for the feelings you do not say out loud</p>
     </footer>
 
+    <style>
+      .ritual-flow {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        max-width: 760px;
+        margin: 28px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .ritual-flow li {
+        display: grid;
+        gap: 7px;
+        min-height: 92px;
+        border-top: 1px solid rgba(217,182,111,.36);
+        background: linear-gradient(180deg, rgba(248,239,230,.055), rgba(248,239,230,.018));
+        padding: 13px 12px;
+      }
+      .ritual-flow span {
+        color: rgba(217,182,111,.82);
+        font-size: .72rem;
+        font-weight: 900;
+        letter-spacing: .16em;
+      }
+      .ritual-flow strong {
+        color: rgba(248,239,230,.9);
+        font-size: .96rem;
+        line-height: 1.32;
+      }
+      .library-section {
+        opacity: .72;
+        filter: saturate(.76);
+      }
+      .library-section:hover,
+      .library-section:focus-within {
+        opacity: .96;
+        filter: saturate(.92);
+      }
+      .library-section .section-heading h2 {
+        font-size: clamp(1.8rem, 3vw, 3.1rem);
+      }
+      .library-section .section-heading p {
+        max-width: 620px;
+      }
+      .library-section .toolbar,
+      .library-section .card-grid,
+      .library-section .result-count {
+        opacity: .82;
+      }
+      .card-tile {
+        box-shadow: 0 14px 42px rgba(0,0,0,.28);
+      }
+      @media (max-width: 920px) {
+        .ritual-flow { grid-template-columns: 1fr; }
+      }
+    </style>
     <script src="./script.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        if (window.__carrieNativeCoreExperience) return;
+        const form = document.querySelector("#ritualForm");
+        const questionInput = document.querySelector("#questionInput");
+        const personInput = document.querySelector("#personInput");
+        const rerollButton = document.querySelector("#rerollButton");
+        const changeQuestionButton = document.querySelector("#changeQuestionButton");
+
+        if (typeof renderReading === "function") {
+          const originalRenderReading = renderReading;
+          renderReading = function(reading) {
+            originalRenderReading(reading);
+            document.querySelectorAll(".result-only").forEach((button) => {
+              button.hidden = false;
+            });
+          };
+        }
+
+        if (form && typeof beginRitual === "function") {
+          form.removeEventListener("submit", beginRitual);
+        }
+
+        window.drawReading = async function({ mode, person, question }) {
+          const seedText = `${mode}|${person}|${question}`;
+          resultSection.classList.remove("result-ready", "cards-awake", "text-awake");
+          shuffleStage.classList.remove("settling", "revealing");
+          shuffleStage.classList.add("shuffling");
+          shuffleStatus.textContent = "正在洗牌。答案已经存在，只是还没有被看见。";
+          location.hash = "#shuffle";
+          await new Promise((resolve) => setTimeout(resolve, 2800));
+          shuffleStage.classList.remove("shuffling");
+          shuffleStage.classList.add("settling");
+          shuffleStatus.textContent = "牌面停住了。先别急着解释。";
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          shuffleStage.classList.add("revealing");
+          shuffleStatus.textContent = "光正在靠近你的问题。";
+          await new Promise((resolve) => setTimeout(resolve, 950));
+          const spread = pickCards(seedText);
+          const readingBase = composeReading({ mode, person, question, spread });
+          state.lastReading = { ...readingBase, mode, person, question, spread, createdAt: new Date().toISOString() };
+          renderReading(state.lastReading);
+          shuffleStage.classList.remove("shuffling", "settling");
+          shuffleStatus.textContent = "结果已经出现。";
+          location.hash = "#result";
+        };
+
+        function guardedBeginRitual(event) {
+          event.preventDefault();
+          const formData = new FormData(form);
+          const question = questionInput.value.trim();
+          if (!question) {
+            showToast("先写下你真正想问的事。");
+            questionInput.focus();
+            return;
+          }
+          drawReading({
+            mode: formData.get("mode"),
+            person: personInput.value.trim(),
+            question,
+          });
+        }
+
+        form.addEventListener("submit", guardedBeginRitual);
+        rerollButton.addEventListener("click", () => {
+          if (!state.lastReading) return showToast("先完成一次抽牌。");
+          drawReading({
+            mode: state.lastReading.mode,
+            person: state.lastReading.person,
+            question: state.lastReading.question,
+          });
+        });
+        changeQuestionButton.addEventListener("click", () => {
+          location.hash = "#ritual";
+          form.scrollIntoView({ behavior: "smooth", block: "center" });
+          setTimeout(() => questionInput.focus(), 260);
+        });
+      });
+    </script>
   </body>
 </html>
