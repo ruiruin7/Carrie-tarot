@@ -29,11 +29,16 @@
     <main>
       <section class="hero" id="ritual" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">An intimate AI divination ritual</p>
+          <p class="eyebrow">An intimate tarot ritual</p>
           <h1 id="hero-title">你没有来问未来。你只是想知道，那个人心里是否还留着你。</h1>
           <p class="hero-text">
             Carrie塔罗会根据你的问题、情绪和三张韦特牌，生成一段更像私密低语的解读。它不是预言，它是一面更温柔也更锋利的镜子。
           </p>
+          <ol class="ritual-flow" aria-label="抽牌流程">
+            <li><span>01</span><strong>写下问题</strong></li>
+            <li><span>02</span><strong>抽三张牌</strong></li>
+            <li><span>03</span><strong>得到一张可分享的解读卡</strong></li>
+          </ol>
         </div>
 
         <form class="ritual-panel" id="ritualForm">
@@ -69,7 +74,7 @@
             <textarea id="questionInput" rows="4" placeholder="例如：我们还会重新靠近吗？Ta 到底有没有想我？"></textarea>
           </label>
 
-          <button class="button primary begin-button" type="submit">开始洗牌</button>
+          <button class="button primary begin-button" type="submit">抽取三张牌</button>
           <p class="microcopy">建议在安静的时候抽牌。越具体的问题，越容易得到像你自己的答案。</p>
         </form>
       </section>
@@ -105,6 +110,8 @@
         </article>
 
         <div class="result-actions">
+          <button class="button primary result-only" id="rerollButton" type="button" hidden>再抽一次</button>
+          <button class="button ghost result-only" id="changeQuestionButton" type="button" hidden>换个问题重新抽</button>
           <button class="button ghost" id="copyButton" type="button">复制分享文案</button>
           <button class="button ghost" id="saveButton" type="button">保存到本机记忆</button>
         </div>
