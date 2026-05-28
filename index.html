@@ -32,7 +32,7 @@
           <p class="eyebrow">An intimate tarot ritual</p>
           <h1 id="hero-title">你没有来问未来。你只是想知道，那个人心里是否还留着你。</h1>
           <p class="hero-text">
-            Carrie塔罗会根据你的问题、情绪和三张韦特牌，生成一段更像私密低语的解读。它不是预言，它是一面更温柔也更锋利的镜子。
+            Carrie 不预测未来，她只是把那些你不敢承认的感受翻出来。写下那个半夜两点还会想起的问题，让三张牌慢慢说出你已经感觉到、却不敢相信的部分。
           </p>
           <ol class="ritual-flow" aria-label="抽牌流程">
             <li><span>01</span><strong>写下问题</strong></li>
@@ -69,6 +69,31 @@
             <span>Ta 的名字 / 代号</span>
             <input id="personInput" type="text" autocomplete="off" placeholder="例如：C、前任、暧昧对象" />
           </label>
+
+          <div class="field">
+            <span>你们现在停在哪个阶段</span>
+            <div class="stage-grid" role="radiogroup" aria-label="关系阶段">
+              <label><input type="radio" name="stage" value="ambiguous" checked /><span>暧昧</span></label>
+              <label><input type="radio" name="stage" value="silent" /><span>断联</span></label>
+              <label><input type="radio" name="stage" value="ex" /><span>前任</span></label>
+              <label><input type="radio" name="stage" value="cold-war" /><span>冷战</span></label>
+              <label><input type="radio" name="stage" value="in-love" /><span>热恋</span></label>
+              <label><input type="radio" name="stage" value="crush" /><span>暗恋</span></label>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>今天你带来的情绪</span>
+            <select id="moodInput">
+              <option value="不安">不安</option>
+              <option value="想念">想念</option>
+              <option value="委屈">委屈</option>
+              <option value="犹豫">犹豫</option>
+              <option value="期待">期待</option>
+              <option value="清醒">清醒</option>
+            </select>
+          </label>
+
           <label class="field">
             <span>你真正想问的事</span>
             <textarea id="questionInput" rows="4" placeholder="例如：我们还会重新靠近吗？Ta 到底有没有想我？"></textarea>
@@ -120,8 +145,9 @@
       <section class="memory-section" id="memory" aria-labelledby="memory-title">
         <div class="section-heading compact">
           <p class="eyebrow">Memory</p>
-          <h2 id="memory-title">最近的三次抽牌</h2>
+          <h2 id="memory-title">你最近的情绪时间轴</h2>
         </div>
+        <div class="ritual-stats" id="ritualStats"></div>
         <div class="memory-list" id="memoryList"></div>
       </section>
 
@@ -159,140 +185,24 @@
       <p>Carrie塔罗 · for the feelings you do not say out loud</p>
     </footer>
 
-    <style>
-      .ritual-flow {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-        max-width: 760px;
-        margin: 28px 0 0;
-        padding: 0;
-        list-style: none;
-      }
-      .ritual-flow li {
-        display: grid;
-        gap: 7px;
-        min-height: 92px;
-        border-top: 1px solid rgba(217,182,111,.36);
-        background: linear-gradient(180deg, rgba(248,239,230,.055), rgba(248,239,230,.018));
-        padding: 13px 12px;
-      }
-      .ritual-flow span {
-        color: rgba(217,182,111,.82);
-        font-size: .72rem;
-        font-weight: 900;
-        letter-spacing: .16em;
-      }
-      .ritual-flow strong {
-        color: rgba(248,239,230,.9);
-        font-size: .96rem;
-        line-height: 1.32;
-      }
-      .library-section {
-        opacity: .72;
-        filter: saturate(.76);
-      }
-      .library-section:hover,
-      .library-section:focus-within {
-        opacity: .96;
-        filter: saturate(.92);
-      }
-      .library-section .section-heading h2 {
-        font-size: clamp(1.8rem, 3vw, 3.1rem);
-      }
-      .library-section .section-heading p {
-        max-width: 620px;
-      }
-      .library-section .toolbar,
-      .library-section .card-grid,
-      .library-section .result-count {
-        opacity: .82;
-      }
-      .card-tile {
-        box-shadow: 0 14px 42px rgba(0,0,0,.28);
-      }
-      @media (max-width: 920px) {
-        .ritual-flow { grid-template-columns: 1fr; }
-      }
-    </style>
     <script src="./script.js"></script>
+    <style>.field select{width:100%;border:1px solid var(--line);border-radius:var(--radius);background:rgba(5,6,12,.58);color:var(--text);padding:12px 13px;outline:none}.field select:focus{border-color:rgba(217,182,111,.6);box-shadow:0 0 0 3px rgba(217,182,111,.1)}.stage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.stage-grid label{display:grid;min-height:40px;place-items:center;border:1px solid var(--line);border-radius:999px;background:rgba(248,239,230,.045);color:var(--muted);cursor:pointer;transition:border-color 180ms ease,background 180ms ease,color 180ms ease,transform 180ms ease}.stage-grid label:hover{transform:translateY(-1px)}.stage-grid input{position:absolute;opacity:0;pointer-events:none}.stage-grid label:has(input:checked){border-color:rgba(217,182,111,.58);background:rgba(217,182,111,.13);color:var(--text)}.result-stage{margin:0 0 12px;color:rgba(217,182,111,.9);font-size:.78rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.result-punchline{max-width:940px;margin:0 auto 16px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.8rem,7vw,6.7rem);font-weight:500;line-height:.91;letter-spacing:0;text-wrap:balance}.result-title{max-width:760px;margin:0 auto 14px;color:rgba(248,239,230,.76);font-size:clamp(1.05rem,1.8vw,1.45rem);font-family:"Inter","PingFang SC","Microsoft YaHei",Arial,sans-serif;font-weight:700}.card-whisper{max-width:250px;margin:0;color:rgba(184,196,215,.66);font-size:.86rem;line-height:1.52;text-align:left}.result-section.result-ready .revealed-card:not(.is-visible){opacity:0;transform:translateY(28px) scale(.96) rotateX(12deg)}.result-section.result-ready .revealed-card.is-visible{opacity:1;transform:translateY(0) scale(1) rotateX(0)}.reading-text p:nth-child(6){transition-delay:600ms}.ritual-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:14px}.stat-card{border:1px solid rgba(217,182,111,.2);background:linear-gradient(145deg,rgba(217,182,111,.1),rgba(255,255,255,.025));padding:16px}.stat-card span{color:var(--gold);font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.stat-card strong{display:block;margin-top:6px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.8rem,3vw,3rem);font-weight:500}.stat-card p{margin:6px 0 0;color:var(--muted)}@media(max-width:920px){.stage-grid,.ritual-stats{grid-template-columns:1fr}}</style>
     <script>
       window.addEventListener("DOMContentLoaded", () => {
-        if (window.__carrieNativeCoreExperience) return;
-        const form = document.querySelector("#ritualForm");
-        const questionInput = document.querySelector("#questionInput");
-        const personInput = document.querySelector("#personInput");
-        const rerollButton = document.querySelector("#rerollButton");
-        const changeQuestionButton = document.querySelector("#changeQuestionButton");
-
-        if (typeof renderReading === "function") {
-          const originalRenderReading = renderReading;
-          renderReading = function(reading) {
-            originalRenderReading(reading);
-            document.querySelectorAll(".result-only").forEach((button) => {
-              button.hidden = false;
-            });
-          };
-        }
-
-        if (form && typeof beginRitual === "function") {
-          form.removeEventListener("submit", beginRitual);
-        }
-
-        window.drawReading = async function({ mode, person, question }) {
-          const seedText = `${mode}|${person}|${question}`;
-          resultSection.classList.remove("result-ready", "cards-awake", "text-awake");
-          shuffleStage.classList.remove("settling", "revealing");
-          shuffleStage.classList.add("shuffling");
-          shuffleStatus.textContent = "正在洗牌。答案已经存在，只是还没有被看见。";
-          location.hash = "#shuffle";
-          await new Promise((resolve) => setTimeout(resolve, 2800));
-          shuffleStage.classList.remove("shuffling");
-          shuffleStage.classList.add("settling");
-          shuffleStatus.textContent = "牌面停住了。先别急着解释。";
-          await new Promise((resolve) => setTimeout(resolve, 1500));
-          shuffleStage.classList.add("revealing");
-          shuffleStatus.textContent = "光正在靠近你的问题。";
-          await new Promise((resolve) => setTimeout(resolve, 950));
-          const spread = pickCards(seedText);
-          const readingBase = composeReading({ mode, person, question, spread });
-          state.lastReading = { ...readingBase, mode, person, question, spread, createdAt: new Date().toISOString() };
-          renderReading(state.lastReading);
-          shuffleStage.classList.remove("shuffling", "settling");
-          shuffleStatus.textContent = "结果已经出现。";
-          location.hash = "#result";
-        };
-
-        function guardedBeginRitual(event) {
-          event.preventDefault();
-          const formData = new FormData(form);
-          const question = questionInput.value.trim();
-          if (!question) {
-            showToast("先写下你真正想问的事。");
-            questionInput.focus();
-            return;
-          }
-          drawReading({
-            mode: formData.get("mode"),
-            person: personInput.value.trim(),
-            question,
-          });
-        }
-
-        form.addEventListener("submit", guardedBeginRitual);
-        rerollButton.addEventListener("click", () => {
-          if (!state.lastReading) return showToast("先完成一次抽牌。");
-          drawReading({
-            mode: state.lastReading.mode,
-            person: state.lastReading.person,
-            question: state.lastReading.question,
-          });
-        });
-        changeQuestionButton.addEventListener("click", () => {
-          location.hash = "#ritual";
-          form.scrollIntoView({ behavior: "smooth", block: "center" });
-          setTimeout(() => questionInput.focus(), 260);
-        });
+        if (window.__carrieNativeRetention) return;
+        const stageCopy = {ambiguous:{label:"暧昧",tension:"你们最消耗人的地方，是有靠近的证据，却没有被确认的位置。",advice:"别只看甜不甜，也要看对方是否愿意把你从猜测里领出来。"},silent:{label:"断联",tension:"沉默没有让事情结束，它只是把你的想象力推到了最吵的位置。",advice:"不要把没有消息翻译成所有答案。先看谁有能力恢复真实沟通。"},ex:{label:"前任",tension:"旧关系真正难放下的，往往不是那个人，而是那个曾经被认真对待的自己。",advice:"复合不是回到过去，而是两个人都愿意承认过去为什么坏掉。"},"cold-war":{label:"冷战",tension:"你们都在等对方先低头，但更深处其实是在等一句：我还在乎。",advice:"如果谁都不说软话，关系就会被自尊慢慢冻住。"},"in-love":{label:"热恋",tension:"越甜的时候，越容易忽略那些细小的不安，因为你怕它破坏此刻。",advice:"好的关系不是没有不安，而是不需要独自消化不安。"},crush:{label:"暗恋",tension:"你把太多细节收藏成证据，但对方也许根本不知道自己正在被你解读。",advice:"别让想象替你完成一段关系。真正的靠近需要被现实碰一下。"}};
+        const form=document.querySelector("#ritualForm"),questionInput=document.querySelector("#questionInput"),moodInput=document.querySelector("#moodInput"),personInput=document.querySelector("#personInput"),shareCard=document.querySelector("#shareCard"),resultSection=document.querySelector("#result"),ritualStats=document.querySelector("#ritualStats"),memoryList=document.querySelector("#memoryList"),rerollButton=document.querySelector("#rerollButton"),changeQuestionButton=document.querySelector("#changeQuestionButton"),saveButton=document.querySelector("#saveButton");
+        const modeName={daily:"今日情绪",relationship:"关系解读",feelings:"Ta 的感受",future:"未来连接"};
+        function stageLabel(stage){return stageCopy[stage]?.label||"暧昧"}function dayKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`}function readHistory(){return JSON.parse(localStorage.getItem("carrieTarotHistory")||"[]")}function writeHistory(history){localStorage.setItem("carrieTarotHistory",JSON.stringify(history.slice(0,12)))}
+        function questionInsight(question){const compact=question.replace(/\s/g,"");const need=/回|复合|回来|重新|靠近/.test(question)?"确认这段关系是否还有回头路":/想|喜欢|爱|在乎|感觉|心里/.test(question)?"确认自己是不是还被放在心里":/该不该|要不要|能不能|会不会|选择|结束/.test(question)?"替一个迟迟不敢做的决定找支点":"让模糊的情绪获得一个形状";const sentence=compact.length<12?"你写得很短，说明你真正想问的可能不是细节，而是对方到底有没有把你当成例外。":compact.length>34?"你写了很多，像是在把已经反复想过的细节排成证词。Carrie 听见的不是啰嗦，是你想被认真对待。":"你的问题保留了分寸，也保留了期待。它不是随口一问，更像一次试探性的求证。";return{need,sentence}}
+        function cardTone(card){if(card.arcana==="Major Arcana")return"命运感";if(card.arcana==="Cups")return"情绪";if(card.arcana==="Swords")return"防御";if(card.arcana==="Wands")return"冲动";return"现实"}function spreadInsight(spread){const reversed=spread.filter(card=>card.reversedDraw).length,majors=spread.filter(card=>card.arcana==="Major Arcana").length,tones=spread.map(cardTone);let combo="这组三张牌不是单点回答，而是在描述一个情绪链条：先看见你的需求，再看见对方的回避，最后落到你下一步该怎么保护自己。";if(majors>=2)combo="大阿卡那偏多，说明这不是一场普通的小情绪。它更像一个反复出现的关系课题，正在逼你换一种看自己的方式。";if(tones.includes("情绪")&&tones.includes("防御"))combo="圣杯和宝剑同时出现，感情是真的，防御也是真的。你们之间最卡的地方，不是没有感觉，而是谁都不愿意先暴露脆弱。";if(tones.includes("现实")&&reversed>=2)combo="逆位和星币的重量让这组牌很现实：如果没有稳定行动，所有暧昧都会慢慢变成自我消耗。";return{tones:[...new Set(tones)],combo}}
+        function punchline(spread,stage,question){const stageLine={ambiguous:"暧昧最残忍的地方，是让你像被选择，又一直没被选择。",silent:"真正想靠近的人，不会只把你留在沉默里。",ex:"旧爱如果要回来，必须带着新的诚实。","cold-war":"冷战赢不了关系，只会让想念变得更难开口。","in-love":"被爱不是高频甜蜜，是不必独自猜测。",crush:"暗恋可以很美，但它不能替你完成相遇。"};if(/猜|不确定|到底/.test(question))return"真正离不开的人，不会一直让你猜。";if(spread.some(card=>card.name==="月亮"))return"你不是看不清，你只是还不想承认雾里有什么。";if(spread.some(card=>card.name==="恋人"))return"喜欢不是选择，选择才会改变关系。";return stageLine[stage]||"你要的不是回应，是被认真放在心上。"}
+        composeReading=function({mode,person,question,spread,stage,mood}){const copy=modeCopy[mode],target=person||"那个人",stageInfo=stageCopy[stage]||stageCopy.ambiguous,qi=questionInsight(question),si=spreadInsight(spread),line=punchline(spread,stage,question);const revealLines=spread.map((card,index)=>{const openings=[`第一张牌先照见你带来的${mood}。`,"第二张牌转向 Ta 没说出口的部分。","第三张牌把关系往下一步推了一点。"];return`${openings[index]}${stageInfo.label}里的${card.name}${card.reversedDraw?"逆位":"正位"}，更像是在说：${card.reversedDraw?card.reversed:card.upright}`});return{title:copy.title,punchline:line,revealLines,shareText:`Carrie塔罗｜${line}\n问题：${question}\n阶段：${stageInfo.label}｜今日情绪：${mood}\n牌面：${spread.map(card=>`${card.name}${card.reversedDraw?"逆位":"正位"}`).join("、")}`,paragraphs:[`你问的是「${question}」。你标记的阶段是「${stageInfo.label}」，今天带来的情绪是「${mood}」。${qi.sentence}`,`Carrie 听见的核心不是“会不会”，而是你正在${qi.need}。${stageInfo.tension}`,si.combo,`${target}在这件事里并非全然无感。但从${si.tones.join("、")}的组合看，Ta 更习惯先确认自己不会失控，再决定要不要给出清楚回应。`,copy.lens[Math.floor(Math.random()*copy.lens.length)],`如果你要一个建议：${stageInfo.advice} 接下来别再用更用力的表达换回应，给出一个清楚的位置，然后看 Ta 是否有能力走进来。`]}};
+        renderReading=function(reading){shareCard.classList.remove("empty");document.querySelectorAll(".result-only").forEach(button=>{button.hidden=false});resultSection.classList.remove("result-ready","cards-awake","text-awake");shareCard.innerHTML=`<div class="result-kicker">Carrie塔罗 · ${new Date().toLocaleDateString("zh-CN")}</div><div class="result-oracle"><p class="result-stage">${stageLabel(reading.stage)} · ${reading.mood} · ${reading.modeLabel}</p><h3 class="result-punchline">${reading.punchline}</h3><p class="result-title">${reading.title}</p><p class="result-question">${reading.question}</p></div><div class="revealed-grid">${reading.spread.map((card,index)=>`<div class="revealed-card ${card.reversedDraw?"reversed":""}"><div class="revealed-card-shell"><div class="revealed-card-face"><img src="${card.image}" alt="${card.name}" /></div></div><small>${card.position} · ${card.reversedDraw?"逆位":"正位"}</small><strong>${card.name}</strong><p class="card-whisper">${reading.revealLines[index]}</p></div>`).join("")}</div><div class="reading-text">${reading.paragraphs.map(p=>`<p>${p}</p>`).join("")}</div>`;requestAnimationFrame(()=>{resultSection.classList.add("result-ready");document.querySelectorAll(".revealed-card").forEach((card,index)=>setTimeout(()=>card.classList.add("is-visible"),620+index*900));setTimeout(()=>resultSection.classList.add("cards-awake"),3180);setTimeout(()=>resultSection.classList.add("text-awake"),3920)})};
+        function record(reading){const history=readHistory();if(!history.some(item=>item.createdAt===reading.createdAt))history.unshift(reading);writeHistory(history);const journal=JSON.parse(localStorage.getItem("carrieMoodJournal")||"{}");journal[dayKey()]={mood:reading.mood,stage:reading.stage,punchline:reading.punchline};localStorage.setItem("carrieMoodJournal",JSON.stringify(journal));renderMemory()}function streak(journal){let count=0,cursor=new Date();while(journal[dayKey(cursor)]){count++;cursor.setDate(cursor.getDate()-1)}return count}
+        renderMemory=function(){const history=readHistory(),journal=JSON.parse(localStorage.getItem("carrieMoodJournal")||"{}"),energy=Object.entries(journal).slice(-7).map(([,item])=>stageLabel(item.stage)).reduce((acc,label)=>({...acc,[label]:(acc[label]||0)+1}),{}),topEnergy=Object.entries(energy).sort((a,b)=>b[1]-a[1])[0]?.[0]||"尚未形成";ritualStats.innerHTML=`<article class="stat-card"><span>连续抽牌</span><strong>${streak(journal)}</strong><p>天。不是上瘾，是你在练习听见自己。</p></article><article class="stat-card"><span>今日情绪</span><strong>${journal[dayKey()]?.mood||"未记录"}</strong><p>${journal[dayKey()]?.punchline||"今晚有问题时，再回来问 Carrie。"}</p></article><article class="stat-card"><span>本周关系能量</span><strong>${topEnergy}</strong><p>最近 ${history.length} 次抽牌会慢慢形成你的关系气候。</p></article>`;memoryList.innerHTML=history.length?history.map(item=>`<article class="memory-item"><small>${new Date(item.createdAt).toLocaleString("zh-CN")} · ${stageLabel(item.stage)} · ${item.mood||"未标记"}</small><h3>${item.punchline||item.title}</h3><p>${item.spread.map(card=>card.name).join(" · ")}</p></article>`).join(""):`<article class="memory-item"><h3>还没有保存的结果。</h3><p>完成一次抽牌后，可以把它留在本机记忆里。</p></article>`};
+        drawReading=async function({mode,person,question,stage,mood}){const seedText=`${mode}|${person}|${stage}|${mood}|${question}`;resultSection.classList.remove("result-ready","cards-awake","text-awake");shuffleStage.classList.remove("settling","revealing");shuffleStage.classList.add("shuffling");shuffleStatus.textContent="正在洗牌。答案已经存在，只是还没有被看见。";location.hash="#shuffle";await new Promise(resolve=>setTimeout(resolve,2800));shuffleStage.classList.remove("shuffling");shuffleStage.classList.add("settling");shuffleStatus.textContent="牌面停住了。先别急着解释。";await new Promise(resolve=>setTimeout(resolve,1500));shuffleStage.classList.add("revealing");shuffleStatus.textContent="光正在靠近你的问题。";await new Promise(resolve=>setTimeout(resolve,950));const spread=pickCards(seedText),readingBase=composeReading({mode,person,question,spread,stage,mood});state.lastReading={...readingBase,mode,modeLabel:modeName[mode]||"关系解读",person,question,stage,mood,spread,createdAt:new Date().toISOString()};renderReading(state.lastReading);record(state.lastReading);shuffleStage.classList.remove("shuffling","settling");shuffleStatus.textContent="三张牌正在依次翻开。";location.hash="#result"};
+        if(typeof beginRitual==="function")form.removeEventListener("submit",beginRitual);function guardedBegin(event){event.preventDefault();const data=new FormData(form),question=questionInput.value.trim();if(!question){showToast("先写下你真正想问的事。");questionInput.focus();return}drawReading({mode:data.get("mode"),stage:data.get("stage"),mood:moodInput.value,person:personInput.value.trim(),question})}form.addEventListener("submit",guardedBegin);rerollButton.addEventListener("click",()=>state.lastReading?drawReading(state.lastReading):showToast("先完成一次抽牌。"));changeQuestionButton.addEventListener("click",()=>{location.hash="#ritual";form.scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>questionInput.focus(),260)});if(typeof saveReading==="function")saveButton.removeEventListener("click",saveReading);saveButton.addEventListener("click",()=>{if(!state.lastReading)return showToast("先完成一次抽牌。");record(state.lastReading);showToast("已留在你的情绪时间轴。")});renderMemory();
       });
     </script>
   </body>
